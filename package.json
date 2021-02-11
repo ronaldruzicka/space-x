@@ -30,7 +30,8 @@
     "next": "latest",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "urql": "^2.0.0"
+    "urql": "^2.0.0",
+    "use-deep-compare-effect": "^1.6.1"
   },
   "devDependencies": {
     "@testing-library/react": "^11.2.5",
