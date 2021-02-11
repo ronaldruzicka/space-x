@@ -29,18 +29,58 @@ const Home = () => {
   })
 
   const { data, fetching: isFetching } = result
-  const headCells = ['Názov misie', 'Názov rakety', 'Dátum vzletu', 'Úspešnosť']
+  const headCells = [
+    { id: 'name', label: 'Mission name', hidden: false },
+    { id: 'rocket', label: 'Rocket name', hidden: false },
+    { id: 'date', label: 'Launch date', hidden: false },
+    { id: 'success', label: 'Success', hidden: false },
+  ]
+
+  const [columns, setColumns] = useState<typeof headCells>(headCells)
+
+  const shouldHideColumn = (columnId: string) =>
+    columns.some(({ id, hidden }) => columnId === id && hidden)
 
   return (
     <>
-      <h1>Missions</h1>
+      <h1>Space X Missions</h1>
       {isFetching && <p>Loading...</p>}
+      <div>
+        {headCells.map(({ id, label }) => {
+          const isChecked = columns.some((column) => column.id === id && !column.hidden)
+
+          return (
+            <label key={id} htmlFor={id}>
+              <input
+                id={id}
+                type="checkbox"
+                checked={isChecked}
+                onChange={() =>
+                  setColumns((prevColumns) =>
+                    prevColumns.map((column) =>
+                      column.id === id
+                        ? {
+                            ...column,
+                            hidden: !column.hidden,
+                          }
+                        : column,
+                    ),
+                  )
+                }
+              />
+              {label}
+            </label>
+          )
+        })}
+      </div>
       {data && (
         <table>
           <thead>
             <tr>
-              {headCells.map((cell) => (
-                <td key={cell}>{cell}</td>
+              {columns.map(({ id, label }) => (
+                <td style={shouldHideColumn(id) ? { display: 'none' } : undefined} key={id}>
+                  {label}
+                </td>
               ))}
             </tr>
           </thead>
@@ -48,10 +88,18 @@ const Home = () => {
             {data.launchesPast.map(
               ({ id, mission_name, rocket, launch_date_local, launch_success }) => (
                 <tr key={id}>
-                  <td>{mission_name}</td>
-                  <td>{rocket.rocket_name}</td>
-                  <td>{launch_date_local}</td>
-                  <td>{launch_success ? 'Success' : 'Failure'}</td>
+                  <td style={shouldHideColumn('name') ? { display: 'none' } : undefined}>
+                    {mission_name}
+                  </td>
+                  <td style={shouldHideColumn('rocket') ? { display: 'none' } : undefined}>
+                    {rocket.rocket_name}
+                  </td>
+                  <td style={shouldHideColumn('date') ? { display: 'none' } : undefined}>
+                    {launch_date_local}
+                  </td>
+                  <td style={shouldHideColumn('success') ? { display: 'none' } : undefined}>
+                    {launch_success ? 'Success' : 'Failure'}
+                  </td>
                 </tr>
               ),
             )}
