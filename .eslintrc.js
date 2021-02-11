@@ -20,14 +20,7 @@ module.exports = {
     node: true, // Node.js global variables and Node.js scoping.
   },
   ignorePatterns: ['node_modules/*', '.next/*', '*.js'], // Ignore node_modules and .next generated files
-  plugins: [
-    '@typescript-eslint',
-    'react',
-    'react-hooks',
-    'jsx-a11y',
-    'import',
-    'prettier',
-  ],
+  plugins: ['@typescript-eslint', 'react', 'react-hooks', 'jsx-a11y', 'import', 'prettier'],
   extends: [
     // Uses the recommended rules from @eslint-plugin-react
     'plugin:react/recommended',
@@ -69,13 +62,11 @@ module.exports = {
 
     // Allow @ts-<directive> comments for development
     // https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/ban-ts-comment.md
-    '@typescript-eslint/ban-ts-comment':
-      process.env.NODE_ENV === 'production' ? 'error' : 'warn',
+    '@typescript-eslint/ban-ts-comment': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
 
     // Allow unused variables for development purposes
     // https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/no-unused-vars.md
-    '@typescript-eslint/no-unused-vars':
-      process.env.NODE_ENV === 'production' ? 'error' : 'warn',
+    '@typescript-eslint/no-unused-vars': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
 
     // Don't need to specify function return types
     // https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/eslint-plugin/docs/rules/explicit-module-boundary-types.md
