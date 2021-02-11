@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Mission, MissionsResponse } from 'shared/types'
 import { useQuery } from 'urql'
@@ -20,6 +21,7 @@ const GET_MISSIONS = `
 const LIMIT = 10
 
 const Home = () => {
+  const router = useRouter()
   const loader = useRef<HTMLDivElement>(null)
   const [offset, setOffset] = useState(0)
   const [result] = useQuery<MissionsResponse>({
@@ -130,7 +132,7 @@ const Home = () => {
           </thead>
           <tbody>
             {missions.map(({ id, mission_name, rocket, launch_date_local, launch_success }) => (
-              <tr key={id}>
+              <tr key={id} onClick={() => router.push(id)}>
                 <td style={shouldHideColumn('id') ? { display: 'none' } : undefined}>{id}</td>
                 <td style={shouldHideColumn('name') ? { display: 'none' } : undefined}>
                   {mission_name}
