@@ -1,0 +1,17 @@
+###############################################################################
+# Set default behavior to automatically normalize line endings.
+###############################################################################
+* text eol=lf
+
+###############################################################################
+# behavior for font files
+#
+# treat font files as binary
+###############################################################################
+*.eot   binary
+*.ttf   binary
+*.woff  binary
+*.woff2 binary
+*.pdf binary
+*.jpg binary
+*.png binary
