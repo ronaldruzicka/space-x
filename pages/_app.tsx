@@ -1,5 +1,4 @@
 import { Container } from 'components/Container'
-import { LanguageSelect } from 'components/LanguageSelect'
 import { client } from 'graphql/client'
 import type { AppProps } from 'next/app'
 import App from 'next/app'
@@ -7,9 +6,9 @@ import { AppContextType } from 'next/dist/next-server/lib/utils'
 import Head from 'next/head'
 import { Router } from 'next/router'
 import { I18nProps } from 'shared/types'
-import 'tailwindcss/tailwind.css'
 import { Provider } from 'urql'
 import { appWithTranslation } from '../i18n'
+import 'styles/global.css'
 
 const MyApp = ({ Component, pageProps }: AppProps<I18nProps>) => {
   return (
