@@ -9,5 +9,7 @@
   "launchDate": "Launch date",
   "success": "Success",
   "yes": "Yes",
-  "no": "No"
+  "no": "No",
+  "errorWithStatus": "A {{statusCode}} error occurred on server",
+  "error": "An error occurred on the server"
 }
