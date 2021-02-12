@@ -6,7 +6,7 @@ import Head from 'next/head'
 import { I18nProps } from 'shared/types'
 import { Provider } from 'urql'
 import { appWithTranslation } from '../i18n'
-import 'styles/global.css'
+import '../styles/global.css'
 
 const MyApp = ({ Component, pageProps }: AppProps<I18nProps>) => {
   return (
