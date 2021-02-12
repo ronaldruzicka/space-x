@@ -1,15 +1,17 @@
 import clsx from 'clsx'
+import { TFunction } from 'next-i18next'
 import { Column } from 'shared/types'
 
 type Props = {
   columns: Column[]
+  t: TFunction
 }
 
-export const TableHead = ({ columns }: Props) => {
+export const TableHead = ({ columns, t }: Props) => {
   return (
     <thead className="bg-gray-50">
       <tr>
-        {columns.map(({ id, label, hidden }) => (
+        {columns.map(({ id, hidden }) => (
           <th
             key={id}
             scope="col"
@@ -18,7 +20,7 @@ export const TableHead = ({ columns }: Props) => {
               hidden && 'hidden',
             )}
           >
-            {label}
+            {t(id)}
           </th>
         ))}
       </tr>

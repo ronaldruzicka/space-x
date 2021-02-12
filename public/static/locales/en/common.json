@@ -1,0 +1,13 @@
+{
+  "title": "Space X missions",
+  "switchColumns": "Switch on/off table columns:",
+  "loadMore": "Load more",
+  "back": "Back",
+  "id": "ID",
+  "missionName": "Mission name",
+  "rocketName": "Rocket name",
+  "launchDate": "Launch date",
+  "success": "Success",
+  "yes": "Yes",
+  "no": "No"
+}

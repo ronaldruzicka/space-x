@@ -1,11 +1,17 @@
+import { Container } from 'components/Container'
+import { LanguageSelect } from 'components/LanguageSelect'
 import { client } from 'graphql/client'
 import type { AppProps } from 'next/app'
+import App from 'next/app'
+import { AppContextType } from 'next/dist/next-server/lib/utils'
 import Head from 'next/head'
-import { Provider } from 'urql'
+import { Router } from 'next/router'
+import { I18nProps } from 'shared/types'
 import 'tailwindcss/tailwind.css'
-import { Container } from 'components/Container'
+import { Provider } from 'urql'
+import { appWithTranslation } from '../i18n'
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
+const MyApp = ({ Component, pageProps }: AppProps<I18nProps>) => {
   return (
     <Provider value={client}>
       <Head>
@@ -21,4 +27,8 @@ const MyApp = ({ Component, pageProps }: AppProps) => {
   )
 }
 
-export default MyApp
+MyApp.getInitialProps = async (appContext: AppContextType<Router>) => ({
+  ...(await App.getInitialProps(appContext)),
+})
+
+export default appWithTranslation(MyApp)

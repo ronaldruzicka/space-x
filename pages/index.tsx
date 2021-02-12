@@ -3,18 +3,20 @@ import { Checkbox } from 'components/Checkbox'
 import { Filter } from 'components/Filter'
 import { Header } from 'components/Header'
 import { Heading } from 'components/Heading'
+import { PageLayout } from 'components/PageLayout'
 import { Spinner } from 'components/Spinner'
 import { Table } from 'components/Table'
 import { TableBody } from 'components/TableBody'
 import { TableCell } from 'components/TableCell'
 import { TableHead } from 'components/TableHead'
 import { TableRow } from 'components/TableRow'
-import { useRouter } from 'next/router'
+import { withTranslation } from 'i18n'
+import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Mission, MissionsResponse } from 'shared/types'
+import { LIMIT } from 'shared/constants'
+import { I18nProps, Mission, MissionsResponse } from 'shared/types'
 import { useQuery } from 'urql'
 import useDeepCompareEffect from 'use-deep-compare-effect'
-import Link from 'next/link'
 
 const GET_MISSIONS = `
   query GetMissions($limit: Int = 10, $offset: Int!) {
@@ -30,10 +32,7 @@ const GET_MISSIONS = `
   }
 `
 
-const LIMIT = 10
-
-const Home = () => {
-  const router = useRouter()
+const Home = ({ t, i18n }: I18nProps) => {
   const loader = useRef<HTMLDivElement>(null)
   const [offset, setOffset] = useState(0)
   const [result] = useQuery<MissionsResponse>({
@@ -89,11 +88,11 @@ const Home = () => {
   }, [loadMore])
 
   const headCells = [
-    { id: 'id', label: 'ID', hidden: true },
-    { id: 'name', label: 'Mission name', hidden: false },
-    { id: 'rocket', label: 'Rocket name', hidden: false },
-    { id: 'date', label: 'Launch date', hidden: false },
-    { id: 'success', label: 'Success', hidden: false },
+    { id: 'id', hidden: true },
+    { id: 'missionName', hidden: false },
+    { id: 'rocketName', hidden: false },
+    { id: 'launchDate', hidden: false },
+    { id: 'success', hidden: false },
   ]
 
   const [columns, setColumns] = useState<typeof headCells>(headCells)
@@ -114,23 +113,23 @@ const Home = () => {
     )
 
   return (
-    <>
+    <PageLayout i18n={i18n}>
       <Header>
-        <Heading component="h1">Space X Missions</Heading>
+        <Heading component="h1">{t('title')}</Heading>
       </Header>
       <Filter>
         <Heading className="mb-3" component="h3">
-          Switch on/off table columns:{' '}
+          {t('switchColumns')}
         </Heading>
         <div className="flex justify-between">
-          {headCells.map(({ id, label }) => {
+          {headCells.map(({ id }) => {
             const isChecked = columns.some((column) => column.id === id && !column.hidden)
 
             return (
               <Checkbox
                 key={id}
                 checked={isChecked}
-                label={label}
+                label={t(id)}
                 name={id}
                 onChange={() => handleToggleColumn(id)}
               />
@@ -140,7 +139,7 @@ const Home = () => {
       </Filter>
       {missions && (
         <Table>
-          <TableHead columns={columns} />
+          <TableHead columns={columns} t={t} />
           <TableBody>
             {missions.map(({ id, mission_name, rocket, launch_date_local, launch_success }) => (
               <Link key={id} href={`/mission/${id}`}>
@@ -150,7 +149,7 @@ const Home = () => {
                   <TableCell hidden={shouldHideColumn('rocket')}>{rocket.rocket_name}</TableCell>
                   <TableCell hidden={shouldHideColumn('date')}>{launch_date_local}</TableCell>
                   <TableCell hidden={shouldHideColumn('success')}>
-                    {launch_success ? 'Success' : 'Failure'}
+                    {t(launch_success ? 'yes' : 'no')}
                   </TableCell>
                 </TableRow>
               </Link>
@@ -180,13 +179,17 @@ const Home = () => {
             }
             onClick={() => setOffset((prevOffset) => prevOffset + LIMIT)}
           >
-            Load more
+            {t('loadMore')}
           </Button>
         )}
         {isFetching && <Spinner />}
       </div>
-    </>
+    </PageLayout>
   )
 }
 
-export default Home
+Home.getInitialProps = async () => ({
+  namespacesRequired: ['common'],
+})
+
+export default withTranslation('common')(Home)

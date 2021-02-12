@@ -1,0 +1,13 @@
+{
+  "title": "Space X misie",
+  "switchColumns": "Zobraziť/skryť stĺpce:",
+  "loadMore": "Načítať viac",
+  "back": "Späť",
+  "id": "ID",
+  "missionName": "Názov misie",
+  "rocketName": "Názov rakety",
+  "launchDate": "Dátum štartu",
+  "success": "Úspech",
+  "yes": "Áno",
+  "no": "Nie"
+}

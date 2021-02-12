@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { LaunchResponse } from 'shared/types'
+import { I18nProps, LaunchResponse } from 'shared/types'
 import { useQuery } from 'urql'
 import YouTube from 'react-youtube'
 import { compose, split, last } from 'ramda'
@@ -7,6 +7,8 @@ import { Button } from 'components/Button'
 import { Header } from 'components/Header'
 import { Heading } from 'components/Heading'
 import { Spinner } from 'components/Spinner'
+import { withTranslation } from 'i18n'
+import { PageLayout } from 'components/PageLayout'
 
 const GET_LAUNCH = `
   query GetLaunch($id: ID!) {
@@ -21,7 +23,7 @@ const GET_LAUNCH = `
 
 const getLastItem = compose(last, split('/'))
 
-const Mission = () => {
+const Mission = ({ t, i18n }: I18nProps) => {
   const router = useRouter()
   const [result] = useQuery<LaunchResponse>({
     query: GET_LAUNCH,
@@ -31,7 +33,6 @@ const Mission = () => {
   })
 
   const { data, fetching: isFetching } = result
-
   const videoId = data && getLastItem(data.launch.links.video_link)
 
   return isFetching ? (
@@ -39,7 +40,7 @@ const Mission = () => {
       <Spinner />
     </div>
   ) : (
-    <>
+    <PageLayout i18n={i18n}>
       <Header>
         <Heading component="h1">{data?.launch.mission_name}</Heading>
       </Header>
@@ -60,7 +61,7 @@ const Mission = () => {
         }
         onClick={() => router.back()}
       >
-        Back
+        {t('back')}
       </Button>
 
       {typeof videoId === 'string' && (
@@ -68,8 +69,12 @@ const Mission = () => {
           <YouTube videoId={videoId} />
         </div>
       )}
-    </>
+    </PageLayout>
   )
 }
 
-export default Mission
+Mission.getInitialProps = async () => ({
+  namespacesRequired: ['common'],
+})
+
+export default withTranslation('common')(Mission)

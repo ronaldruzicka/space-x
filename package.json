@@ -31,6 +31,7 @@
     "clsx": "^1.1.1",
     "graphql": "^15.5.0",
     "next": "latest",
+    "next-i18next": "^7.0.1",
     "postcss": "^8.2.6",
     "ramda": "^0.27.1",
     "react": "^17.0.1",
