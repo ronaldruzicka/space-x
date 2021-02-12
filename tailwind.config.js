@@ -1,6 +1,5 @@
 module.exports = {
-  // TODO: Will the styles work without purge?
-  // purge: ['./pages/**/*.{tsx}', './components/**/*.{tsx}'],
+  purge: ['./pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}'],
   darkMode: false,
   theme: {
     extend: {},
