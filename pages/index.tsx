@@ -1,3 +1,13 @@
+import { Button } from 'components/Button'
+import { Checkbox } from 'components/Checkbox'
+import { Filter } from 'components/Filter'
+import { Header } from 'components/Header'
+import { Heading } from 'components/Heading'
+import { Spinner } from 'components/Spinner'
+import { Table } from 'components/Table'
+import { TableBody } from 'components/TableBody'
+import { TableCell } from 'components/TableCell'
+import { TableHead } from 'components/TableHead'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Mission, MissionsResponse } from 'shared/types'
@@ -35,17 +45,18 @@ const Home = () => {
   const { data, fetching: isFetching } = result
   const [missions, setMissions] = useState<Mission[]>([])
   const response = data?.launchesPast || []
+  const isFirstPage = missions.length === LIMIT
   const hasMoreMissions = Array.isArray(response) && response.length >= LIMIT
 
   const loadMore = useCallback(
     (entries: IntersectionObserverEntry[]) => {
       const target = entries[0]
 
-      if (target.isIntersecting && hasMoreMissions) {
+      if (!isFirstPage && target.isIntersecting && hasMoreMissions) {
         !isFetching && setOffset((prevPage) => prevPage + LIMIT)
       }
     },
-    [hasMoreMissions, isFetching],
+    [isFirstPage, hasMoreMissions, isFetching],
   )
 
   // Merge new missions with previous ones
@@ -76,7 +87,7 @@ const Home = () => {
   }, [loadMore])
 
   const headCells = [
-    { id: 'id', label: 'ID', hidden: false },
+    { id: 'id', label: 'ID', hidden: true },
     { id: 'name', label: 'Mission name', hidden: false },
     { id: 'rocket', label: 'Rocket name', hidden: false },
     { id: 'date', label: 'Launch date', hidden: false },
@@ -88,76 +99,88 @@ const Home = () => {
   const shouldHideColumn = (columnId: string) =>
     columns.some(({ id, hidden }) => columnId === id && hidden)
 
+  const handleToggleColumn = (id: string) =>
+    setColumns((prevColumns) =>
+      prevColumns.map((column) =>
+        column.id === id
+          ? {
+              ...column,
+              hidden: !column.hidden,
+            }
+          : column,
+      ),
+    )
+
   return (
     <>
-      <h1>Space X Missions</h1>
-      <div>
-        {headCells.map(({ id, label }) => {
-          const isChecked = columns.some((column) => column.id === id && !column.hidden)
+      <Header>
+        <Heading component="h1">Space X Missions</Heading>
+      </Header>
+      <Filter>
+        <Heading className="mb-3" component="h3">
+          Switch on/off table columns:{' '}
+        </Heading>
+        <div className="flex justify-between">
+          {headCells.map(({ id, label }) => {
+            const isChecked = columns.some((column) => column.id === id && !column.hidden)
 
-          return (
-            <label key={id} htmlFor={id}>
-              <input
-                id={id}
-                type="checkbox"
+            return (
+              <Checkbox
+                key={id}
                 checked={isChecked}
-                onChange={() =>
-                  setColumns((prevColumns) =>
-                    prevColumns.map((column) =>
-                      column.id === id
-                        ? {
-                            ...column,
-                            hidden: !column.hidden,
-                          }
-                        : column,
-                    ),
-                  )
-                }
+                label={label}
+                name={id}
+                onChange={() => handleToggleColumn(id)}
               />
-              {label}
-            </label>
-          )
-        })}
-      </div>
+            )
+          })}
+        </div>
+      </Filter>
       {missions && (
-        <table>
-          <thead>
-            <tr>
-              {columns.map(({ id, label }) => (
-                <td style={shouldHideColumn(id) ? { display: 'none' } : undefined} key={id}>
-                  {label}
-                </td>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
+        <Table>
+          <TableHead columns={columns} />
+          <TableBody>
             {missions.map(({ id, mission_name, rocket, launch_date_local, launch_success }) => (
               <tr key={id} onClick={() => router.push(id)}>
-                <td style={shouldHideColumn('id') ? { display: 'none' } : undefined}>{id}</td>
-                <td style={shouldHideColumn('name') ? { display: 'none' } : undefined}>
-                  {mission_name}
-                </td>
-                <td style={shouldHideColumn('rocket') ? { display: 'none' } : undefined}>
-                  {rocket.rocket_name}
-                </td>
-                <td style={shouldHideColumn('date') ? { display: 'none' } : undefined}>
-                  {launch_date_local}
-                </td>
-                <td style={shouldHideColumn('success') ? { display: 'none' } : undefined}>
+                <TableCell hidden={shouldHideColumn('id')}>{id}</TableCell>
+                <TableCell hidden={shouldHideColumn('name')}>{mission_name}</TableCell>
+                <TableCell hidden={shouldHideColumn('rocket')}>{rocket.rocket_name}</TableCell>
+                <TableCell hidden={shouldHideColumn('date')}>{launch_date_local}</TableCell>
+                <TableCell hidden={shouldHideColumn('success')}>
                   {launch_success ? 'Success' : 'Failure'}
-                </td>
+                </TableCell>
               </tr>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       )}
 
-      <p ref={loader}>{isFetching && 'Loading...'}</p>
-      {!hasMoreMissions && (
-        <p>
-          <strong>No more missions</strong>
-        </p>
-      )}
+      <div className="flex justify-center py-4" ref={loader}>
+        {isFirstPage && !isFetching && (
+          <Button
+            icon={
+              <svg
+                className="-ml-1 mr-2 h-5 w-5"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M15 13l-3 3m0 0l-3-3m3 3V8m0 13a9 9 0 110-18 9 9 0 010 18z"
+                />
+              </svg>
+            }
+            onClick={() => setOffset((prevOffset) => prevOffset + LIMIT)}
+          >
+            Load more
+          </Button>
+        )}
+        {isFetching && <Spinner />}
+      </div>
     </>
   )
 }

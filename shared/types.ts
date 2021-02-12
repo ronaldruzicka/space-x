@@ -1,3 +1,11 @@
+export type Children = React.ReactNode | React.ReactNode[]
+
+export type Column = {
+  id: string
+  label: string
+  hidden: boolean
+}
+
 export type Rocket = {
   rocket_name: string
 }
