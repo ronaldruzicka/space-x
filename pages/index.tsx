@@ -8,11 +8,13 @@ import { Table } from 'components/Table'
 import { TableBody } from 'components/TableBody'
 import { TableCell } from 'components/TableCell'
 import { TableHead } from 'components/TableHead'
+import { TableRow } from 'components/TableRow'
 import { useRouter } from 'next/router'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Mission, MissionsResponse } from 'shared/types'
 import { useQuery } from 'urql'
 import useDeepCompareEffect from 'use-deep-compare-effect'
+import Link from 'next/link'
 
 const GET_MISSIONS = `
   query GetMissions($limit: Int = 10, $offset: Int!) {
@@ -141,15 +143,17 @@ const Home = () => {
           <TableHead columns={columns} />
           <TableBody>
             {missions.map(({ id, mission_name, rocket, launch_date_local, launch_success }) => (
-              <tr key={id} onClick={() => router.push(id)}>
-                <TableCell hidden={shouldHideColumn('id')}>{id}</TableCell>
-                <TableCell hidden={shouldHideColumn('name')}>{mission_name}</TableCell>
-                <TableCell hidden={shouldHideColumn('rocket')}>{rocket.rocket_name}</TableCell>
-                <TableCell hidden={shouldHideColumn('date')}>{launch_date_local}</TableCell>
-                <TableCell hidden={shouldHideColumn('success')}>
-                  {launch_success ? 'Success' : 'Failure'}
-                </TableCell>
-              </tr>
+              <Link key={id} href={`/mission/${id}`}>
+                <TableRow>
+                  <TableCell hidden={shouldHideColumn('id')}>{id}</TableCell>
+                  <TableCell hidden={shouldHideColumn('name')}>{mission_name}</TableCell>
+                  <TableCell hidden={shouldHideColumn('rocket')}>{rocket.rocket_name}</TableCell>
+                  <TableCell hidden={shouldHideColumn('date')}>{launch_date_local}</TableCell>
+                  <TableCell hidden={shouldHideColumn('success')}>
+                    {launch_success ? 'Success' : 'Failure'}
+                  </TableCell>
+                </TableRow>
+              </Link>
             ))}
           </TableBody>
         </Table>
