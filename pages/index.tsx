@@ -145,9 +145,11 @@ const Home = ({ t, i18n }: I18nProps) => {
               <Link key={id} href={`/mission/${id}`}>
                 <TableRow>
                   <TableCell hidden={shouldHideColumn('id')}>{id}</TableCell>
-                  <TableCell hidden={shouldHideColumn('name')}>{mission_name}</TableCell>
-                  <TableCell hidden={shouldHideColumn('rocket')}>{rocket.rocket_name}</TableCell>
-                  <TableCell hidden={shouldHideColumn('date')}>{launch_date_local}</TableCell>
+                  <TableCell hidden={shouldHideColumn('missionName')}>{mission_name}</TableCell>
+                  <TableCell hidden={shouldHideColumn('rocketName')}>
+                    {rocket.rocket_name}
+                  </TableCell>
+                  <TableCell hidden={shouldHideColumn('launchDate')}>{launch_date_local}</TableCell>
                   <TableCell hidden={shouldHideColumn('success')}>
                     {t(launch_success ? 'yes' : 'no')}
                   </TableCell>
