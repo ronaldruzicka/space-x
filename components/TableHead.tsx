@@ -1,13 +1,14 @@
 import clsx from 'clsx'
-import { TFunction } from 'next-i18next'
+import useTranslation from 'next-translate/useTranslation'
 import { Column } from 'shared/types'
 
 type Props = {
   columns: Column[]
-  t: TFunction
 }
 
-export const TableHead = ({ columns, t }: Props) => {
+export const TableHead = ({ columns }: Props) => {
+  const { t } = useTranslation()
+
   return (
     <thead className="bg-gray-50">
       <tr>
@@ -20,7 +21,7 @@ export const TableHead = ({ columns, t }: Props) => {
               hidden && 'hidden',
             )}
           >
-            {t(id)}
+            {t(`common:${id}`)}
           </th>
         ))}
       </tr>

@@ -3,18 +3,17 @@ import { Checkbox } from 'components/Checkbox'
 import { Filter } from 'components/Filter'
 import { Header } from 'components/Header'
 import { Heading } from 'components/Heading'
-import { PageLayout } from 'components/PageLayout'
 import { Spinner } from 'components/Spinner'
 import { Table } from 'components/Table'
 import { TableBody } from 'components/TableBody'
 import { TableCell } from 'components/TableCell'
 import { TableHead } from 'components/TableHead'
 import { TableRow } from 'components/TableRow'
-import { withTranslation } from 'i18n'
+import useTranslation from 'next-translate/useTranslation'
 import Link from 'next/link'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { LIMIT } from 'shared/constants'
-import { I18nProps, Mission, MissionsResponse } from 'shared/types'
+import { Mission, MissionsResponse } from 'shared/types'
 import { useQuery } from 'urql'
 import useDeepCompareEffect from 'use-deep-compare-effect'
 
@@ -32,7 +31,8 @@ const GET_MISSIONS = `
   }
 `
 
-const Home = ({ t, i18n }: I18nProps) => {
+const Home = () => {
+  const { t, lang } = useTranslation()
   const loader = useRef<HTMLDivElement>(null)
   const [offset, setOffset] = useState(0)
   const [result] = useQuery<MissionsResponse>({
@@ -113,13 +113,13 @@ const Home = ({ t, i18n }: I18nProps) => {
     )
 
   return (
-    <PageLayout i18n={i18n}>
+    <>
       <Header>
-        <Heading component="h1">{t('title')}</Heading>
+        <Heading component="h1">{t('common:title')}</Heading>
       </Header>
       <Filter>
         <Heading className="mb-3" component="h3">
-          {t('switchColumns')}
+          {t('common:switchColumns')}
         </Heading>
         <div className="flex justify-between">
           {headCells.map(({ id }) => {
@@ -129,7 +129,7 @@ const Home = ({ t, i18n }: I18nProps) => {
               <Checkbox
                 key={id}
                 checked={isChecked}
-                label={t(id)}
+                label={t(`common:${id}`)}
                 name={id}
                 onChange={() => handleToggleColumn(id)}
               />
@@ -139,7 +139,7 @@ const Home = ({ t, i18n }: I18nProps) => {
       </Filter>
       {missions && (
         <Table>
-          <TableHead columns={columns} t={t} />
+          <TableHead columns={columns} />
           <TableBody>
             {missions.map(({ id, mission_name, rocket, launch_date_local, launch_success }) => (
               <Link key={id} href={`/mission/${id}`}>
@@ -150,10 +150,10 @@ const Home = ({ t, i18n }: I18nProps) => {
                     {rocket.rocket_name}
                   </TableCell>
                   <TableCell hidden={shouldHideColumn('launchDate')}>
-                    {new Intl.DateTimeFormat(i18n.language).format(new Date(launch_date_local))}
+                    {new Intl.DateTimeFormat(lang).format(new Date(launch_date_local))}
                   </TableCell>
                   <TableCell hidden={shouldHideColumn('success')}>
-                    {t(launch_success ? 'yes' : 'no')}
+                    {t(`common:${launch_success ? 'yes' : 'no'}`)}
                   </TableCell>
                 </TableRow>
               </Link>
@@ -183,17 +183,13 @@ const Home = ({ t, i18n }: I18nProps) => {
             }
             onClick={() => setOffset((prevOffset) => prevOffset + LIMIT)}
           >
-            {t('loadMore')}
+            {t('common:loadMore')}
           </Button>
         )}
         {isFetching && <Spinner />}
       </div>
-    </PageLayout>
+    </>
   )
 }
 
-Home.getInitialProps = async () => ({
-  namespacesRequired: ['common'],
-})
-
-export default withTranslation('common')(Home)
+export default Home

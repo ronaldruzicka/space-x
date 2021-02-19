@@ -1,10 +1,3 @@
-import { I18n, TFunction } from 'next-i18next'
-
-export type I18nProps = {
-  t: TFunction
-  i18n: I18n
-  namespacesRequired: string[]
-}
 export type Children = React.ReactNode | React.ReactNode[]
 
 export type Column = {

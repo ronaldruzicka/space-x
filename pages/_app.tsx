@@ -1,14 +1,12 @@
 import { Container } from 'components/Container'
+import { LanguageSelect } from 'components/LanguageSelect'
 import { client } from 'graphql/client'
-import type { AppContext, AppProps } from 'next/app'
-import App from 'next/app'
+import type { AppProps } from 'next/app'
 import Head from 'next/head'
-import { I18nProps } from 'shared/types'
-import { Provider } from 'urql'
-import { appWithTranslation } from '../i18n'
 import 'styles/global.css'
+import { Provider } from 'urql'
 
-const MyApp = ({ Component, pageProps }: AppProps<I18nProps>) => {
+const MyApp = ({ Component, pageProps }: AppProps) => {
   return (
     <Provider value={client}>
       <Head>
@@ -18,14 +16,11 @@ const MyApp = ({ Component, pageProps }: AppProps<I18nProps>) => {
       </Head>
 
       <Container>
+        <LanguageSelect />
         <Component {...pageProps} />
       </Container>
     </Provider>
   )
 }
 
-MyApp.getInitialProps = async (appContext: AppContext) => ({
-  ...(await App.getInitialProps(appContext)),
-})
-
-export default appWithTranslation(MyApp)
+export default MyApp

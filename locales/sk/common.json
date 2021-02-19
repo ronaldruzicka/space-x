@@ -9,7 +9,5 @@
   "launchDate": "Dátum štartu",
   "success": "Úspech",
   "yes": "Áno",
-  "no": "Nie",
-  "errorWithStatus": "Na serveri nastala chyba {{statusCode}}",
-  "error": "Na serveri nastala chyba"
+  "no": "Nie"
 }
